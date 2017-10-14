@@ -4,8 +4,8 @@ echo `dirname $0`
 declare LOG_FILE=`dirname $0`/sub-downloader.log
 declare WANTED_FILE=`dirname $0`/wanted/subs.wanted
 
-# Sonarr does not show the stdout as part of the log information displayed by the system,
-# So I decided to store the log information by my own.
+# Radarr/Sonarr does not show the stdout as part of the log information displayed by the system,
+# So the log information is stored on our own
 function doLog {
   echo -e $1
   echo -e $1 >> $LOG_FILE
@@ -40,26 +40,32 @@ done
 
 doLog "###### Process started at: $(date) ######"
 
-declare EPISODE_PATH=${sonarr_episodefile_path}
+declare MOVIE_PATH=${radarr_moviefile_path}
+# MovieFile_Path # Full path to the movie file
+# MovieFile_SceneName #	Original release name
+# MovieFile_SourcePath #	Full path to the episode file that was imported
+# MovieFile_SourceFolder #	Full path to the folder the episode file was imported from
+# Movie_Path #	Full path to the movie
+# Movie_ImdbId #	IMDB ID for the movie
 
-if [[ -z $EPISODE_PATH ]]; then
-  doLog "sonarr_episodefile_path environment variable not found"
+if [[ -z $MOVIE_PATH ]]; then
+  doLog "radarr_moviefile_path environment variable not found"
   exit 1
 fi
 
-doLog "Looking for subtitles for: ${EPISODE_PATH}"
+doLog "Looking for subtitles for: ${MOVIE_PATH}"
 
 doLog "Executing subliminal"
-doLog "subliminal download ${LANGUAGES} ${EPISODE_PATH}"
-subliminal download ${LANGUAGES} "${EPISODE_PATH}" >> $LOG_FILE 2>&1
+doLog "subliminal download ${LANGUAGES} ${MOVIE_PATH}"
+subliminal download ${LANGUAGES} "${MOVIE_PATH}" >> $LOG_FILE 2>&1
   
 # Look for not found subtitles
 declare LANG_ARRAY=($(echo ${LANGUAGES} | sed "s/-l //g"))
 
 for LANG in "${LANG_ARRAY[@]}"; do
-  SUB_FILE=$(echo $EPISODE_PATH | sed "s/...$/${LANG}\.srt/g")
+  SUB_FILE=$(echo $MOVIE_PATH | sed "s/...$/${LANG}\.srt/g")
   if [[ ! -f $SUB_FILE ]]; then
     doLog "Subtitle ${SUB_FILE} not found, adding it to wanted"
-    echo $EPISODE_PATH:$SUB_FILE >> ${WANTED_FILE}
+    echo $MOVIE_PATH:$SUB_FILE >> ${WANTED_FILE}
   fi
 done
