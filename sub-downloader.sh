@@ -3,6 +3,7 @@ set -e
 echo `dirname $0`
 declare LOG_FILE=`dirname $0`/sub-downloader.log
 declare WANTED_FILE=`dirname $0`/wanted/subs.wanted
+declare CACHE_DIR=`dirname $0`/cache/
 
 # Radarr/Sonarr does not show the stdout as part of the log information displayed by the system,
 # So the log information is stored on our own
@@ -71,8 +72,8 @@ fi
 doLog "Looking for subtitles for: ${MOVIE_NAME}"
 
 doLog "Executing subliminal"
-doLog "subliminal download -d ${MOVIE_DIR} ${LANGUAGES} ${SCENE_NAME}.mkv"
-subliminal download -d ${MOVIE_DIR} ${LANGUAGES} "${SCENE_NAME}.mkv" >> $LOG_FILE 2>&1
+doLog "subliminal --cache-dir ${CACHE_DIR} download -d ${MOVIE_DIR} ${LANGUAGES} ${SCENE_NAME}.mkv"
+subliminal --cache-dir ${CACHE_DIR} download -d ${MOVIE_DIR} ${LANGUAGES} "${SCENE_NAME}.mkv" >> $LOG_FILE 2>&1
   
 # Look for not found subtitles
 declare LANG_ARRAY=($(echo ${LANGUAGES} | sed "s/-l //g"))
@@ -81,7 +82,7 @@ for LANG in "${LANG_ARRAY[@]}"; do
   SUB_FILE_SRC="${MOVIE_DIR}/${SCENE_NAME}.${LANG}.srt"
   SUB_FILE_DST=$(echo $MOVIE_PATH | sed "s/...$/${LANG}\.srt/g")
   mv $SUB_FILE_SRC $SUB_FILE_DST
-  if [[ ! -f $SUB_FILE ]]; then
+  if [[ ! -f $SUB_FILE_SRC ]]; then
     doLog "Subtitle ${SUB_FILE_SRC} not found, adding it to wanted"
     echo $MOVIE_DIR:$SCENE_NAME:$MOVIE_NAME:$LANG >> ${WANTED_FILE}
   fi
