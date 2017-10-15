@@ -73,7 +73,7 @@ doLog "Looking for subtitles for: ${MOVIE_NAME}"
 
 doLog "Executing subliminal"
 doLog "subliminal --cache-dir ${CACHE_DIR} download -d ${MOVIE_DIR} ${LANGUAGES} ${SCENE_NAME}.mkv"
-subliminal --cache-dir ${CACHE_DIR} download -d ${MOVIE_DIR} ${LANGUAGES} "${SCENE_NAME}.mkv" >> $LOG_FILE 2>&1
+subliminal --cache-dir ${CACHE_DIR} download -d "${MOVIE_DIR}" ${LANGUAGES} -f "${SCENE_NAME}.mkv" >> $LOG_FILE 2>&1
   
 # Look for not found subtitles
 declare LANG_ARRAY=($(echo ${LANGUAGES} | sed "s/-l //g"))
@@ -81,8 +81,8 @@ declare LANG_ARRAY=($(echo ${LANGUAGES} | sed "s/-l //g"))
 for LANG in "${LANG_ARRAY[@]}"; do
   SUB_FILE_SRC="${MOVIE_DIR}/${SCENE_NAME}.${LANG}.srt"
   SUB_FILE_DST=$(echo $MOVIE_PATH | sed "s/...$/${LANG}\.srt/g")
-  mv $SUB_FILE_SRC $SUB_FILE_DST
-  if [[ ! -f $SUB_FILE_SRC ]]; then
+  mv "$SUB_FILE_SRC" "$SUB_FILE_DST"
+  if [[ ! -f $SUB_FILE_DST ]]; then
     doLog "Subtitle ${SUB_FILE_SRC} not found, adding it to wanted"
     echo $MOVIE_DIR:$SCENE_NAME:$MOVIE_NAME:$LANG >> ${WANTED_FILE}
   fi
