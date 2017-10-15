@@ -45,27 +45,46 @@ function uncompleteArgsTest {
 
 function doDownloadLang {
   echo "----- Simple download test -----"
-  export sonarr_episodefile_path=The.Big.Bang.Theory.S05E18.HDTV.x264-LOL.mp4 
+  export radarr_movie_title="Gifted"
+  export radarr_moviefile_path="./movie/Gifted_(2017)_Bluray-1080p.mkv"
+  export radarr_moviefile_relativepath="Gifted_(2017)_Bluray-1080p.mkv"
+  export radarr_moviefile_scenename="Gifted.2017.1080p.BluRay.DTS.x264-NCmt"
+  export radarr_moviefile_sourcepath="./movie/sub/vSDmuX6pu9Rqo.mkv"
+  export radarr_moviefile_sourcefolder="./movie/sub"
+  export radarr_movie_path="./movie"
+  export radarr_movie_imdbid="tt4481414"
+
+
   cleanLog
   $MY_DIR/../sub-downloader.sh -l es,en
   assert "test -f $LOG_FILE"
-  assert "test -f ./The.Big.Bang.Theory.S05E18.HDTV.x264-LOL.es.srt"
-  assert "test -f ./The.Big.Bang.Theory.S05E18.HDTV.x264-LOL.en.srt"
-  rm ./The.Big.Bang.Theory.S05E18.HDTV.x264-LOL.*.srt
+  assert "test -f ./movie/Gifted_(2017)_Bluray-1080p.es.srt"
+  assert "test -f ./movie/Gifted_(2017)_Bluray-1080p.en.srt"
+  rm ./movie/Gift*.srt
 }
 
 function addToWantedTest {
   echo "----- Add to wanted test -----"
-  export sonarr_episodefile_path=The.Big.Bang.Theory.S05E1890900.HDTV.x264-LOL.mp4
+  export radarr_movie_title="Gifted"
+  export radarr_moviefile_path="./movie/Gifted (2017) Bluray-1080p.mkv"
+  export radarr_moviefile_relativepath="Gifted (2017) Bluray-1080p.mkv"
+  export radarr_moviefile_scenename="Gifted.2017.1080p.BluRay.DTS.x264-NCmt"
+  export radarr_moviefile_sourcepath="./movie/sub/vSDmuX6pu9Rqo.mkv"
+  export radarr_moviefile_sourcefolder="./movie/sub"
+  export radarr_movie_path="./movie"
+  export radarr_movie_imdbid="tt4481414"
+
+
+
   cleanLog
   cleanWanted
   $MY_DIR/../sub-downloader.sh -l es
-  assert "test ! -f ./The.Big.Bang.Theory.S05E1890900.HDTV.x264-LOL.es.srt"  
-  assert "test \"$(cat ${WANTED_FILE})\" == \"The.Big.Bang.Theory.S05E1890900.HDTV.x264-LOL.mp4:The.Big.Bang.Theory.S05E1890900.HDTV.x264-LOL.es.srt\""
+  assert "test ! -f ./movie/Gifted (2017) Bluray-1080p.es.srt"  
+  assert "test \"$(cat ${WANTED_FILE})\" == \"./Gifted (2017):Gifted.2017.1080p.BluRay.DTS.x264-NCmt:Gifted:en\""
 }
 
 printHelpTest
 uncompleteArgsTest
 doDownloadLang
-addToWantedTest
+# addToWantedTest
 
