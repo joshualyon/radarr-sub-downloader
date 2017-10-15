@@ -45,7 +45,7 @@ Behind the scenes, both scripts uses [subliminal](3) as subtitle downloader engi
 MIT
 
 # Developer Information
-Josh Lyon - https://boshdirect.com - RADARR FORK
+Josh Lyon - https://boshdirect.com - RADARR FORK  
 Ezequiel Bergamaschi - ezequielbergamaschi@gmail.com - SONARR FORK
 
 [1]: https://github.com/Radarr/Radarr
